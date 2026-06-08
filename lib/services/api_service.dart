@@ -4,8 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:8080';
-
+static const String baseUrl = 'https://clario-backend-production-d30b.up.railway.app';
   // ── Token management ──────────────────────────────────────────
   static Future<void> guardarToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
