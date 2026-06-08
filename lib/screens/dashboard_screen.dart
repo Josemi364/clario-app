@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:clario_app/services/api_service.dart';
 import 'package:clario_app/screens/login_screen.dart';
+import 'package:clario_app/screens/facturas_screen.dart';
+import 'package:clario_app/screens/gastos_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -10,6 +12,70 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _screens = [
+    const _DashboardTab(),
+    const FacturasScreen(),
+    const GastosScreen(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF0D1117),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF161B22),
+        title: const Text('Clario',
+            style: TextStyle(
+                color: Color(0xFF00D4AA), fontWeight: FontWeight.bold)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.white54),
+            onPressed: () async {
+              await ApiService.cerrarSesion();
+              if (context.mounted) {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (_) => const LoginScreen()));
+              }
+            },
+          ),
+        ],
+      ),
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFF161B22),
+        selectedItemColor: const Color(0xFF00D4AA),
+        unselectedItemColor: Colors.white38,
+        currentIndex: _selectedIndex,
+        onTap: (index) => setState(() => _selectedIndex = index),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt_long),
+            label: 'Facturas',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_bag),
+            label: 'Gastos',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DashboardTab extends StatefulWidget {
+  const _DashboardTab();
+
+  @override
+  State<_DashboardTab> createState() => _DashboardTabState();
+}
+
+class _DashboardTabState extends State<_DashboardTab> {
   Map<String, dynamic>? _sueldoNeto;
   bool _cargando = true;
   String? _error;
@@ -35,56 +101,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  Future<void> _cerrarSesion() async {
-    await ApiService.cerrarSesion();
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0D1117),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF161B22),
-        title: const Text('Clario',
-            style: TextStyle(
-                color: Color(0xFF00D4AA), fontWeight: FontWeight.bold)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white54),
-            onPressed: _cerrarSesion,
-          ),
-        ],
+    if (_cargando) {
+      return const Center(
+          child: CircularProgressIndicator(color: Color(0xFF00D4AA)));
+    }
+    if (_error != null) {
+      return Center(
+          child: Text(_error!, style: const TextStyle(color: Colors.redAccent)));
+    }
+    return RefreshIndicator(
+      onRefresh: _cargarDatos,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _tarjetaSueldoNeto(),
+            const SizedBox(height: 20),
+            _tarjetaDesglose(),
+            const SizedBox(height: 20),
+            _tarjetaAlerta(),
+          ],
+        ),
       ),
-      body: _cargando
-          ? const Center(
-              child: CircularProgressIndicator(color: Color(0xFF00D4AA)))
-          : _error != null
-              ? Center(
-                  child: Text(_error!,
-                      style: const TextStyle(color: Colors.redAccent)))
-              : RefreshIndicator(
-                  onRefresh: _cargarDatos,
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _tarjetaSueldoNeto(),
-                        const SizedBox(height: 20),
-                        _tarjetaDesglose(),
-                        const SizedBox(height: 20),
-                        _tarjetaAlerta(),
-                      ],
-                    ),
-                  ),
-                ),
     );
   }
 
