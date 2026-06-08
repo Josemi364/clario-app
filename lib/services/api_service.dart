@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -102,4 +103,17 @@ class ApiService {
     );
     return jsonDecode(response.body);
   }
+  static Future<Map<String, dynamic>> analizarFacturaOcr(File imagen) async {
+  final token = await obtenerToken();
+  final request = http.MultipartRequest(
+    'POST',
+    Uri.parse('$baseUrl/v1/ocr/factura'),
+  );
+  request.headers['Authorization'] = 'Bearer $token';
+  request.files.add(await http.MultipartFile.fromPath('imagen', imagen.path));
+  
+  final streamedResponse = await request.send();
+  final response = await http.Response.fromStream(streamedResponse);
+  return jsonDecode(response.body);
+}
 }

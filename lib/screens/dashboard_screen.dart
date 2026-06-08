@@ -3,6 +3,7 @@ import 'package:clario_app/services/api_service.dart';
 import 'package:clario_app/screens/login_screen.dart';
 import 'package:clario_app/screens/facturas_screen.dart';
 import 'package:clario_app/screens/gastos_screen.dart';
+import 'package:clario_app/screens/ocr_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -14,11 +15,12 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = [
-    const _DashboardTab(),
-    const FacturasScreen(),
-    const GastosScreen(),
-  ];
+ final List<Widget> _screens = [
+  const _DashboardTab(),
+  const FacturasScreen(),
+  const GastosScreen(),
+  const OcrScreen(),
+];
 
   @override
   Widget build(BuildContext context) {
@@ -50,19 +52,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Dashboard',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: 'Facturas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag),
-            label: 'Gastos',
-          ),
-        ],
+  BottomNavigationBarItem(
+    icon: Icon(Icons.dashboard),
+    label: 'Dashboard',
+  ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.receipt_long),
+    label: 'Facturas',
+  ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.shopping_bag),
+    label: 'Gastos',
+  ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.document_scanner),
+    label: 'Escanear',
+  ),
+],
       ),
     );
   }
