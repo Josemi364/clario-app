@@ -1,17 +1,41 @@
-# clario_app
+# Clario — App
 
-A new Flutter project.
+Cliente móvil de **Clario**, construido en Flutter, conectado al backend Spring Boot de Clario ya desplegado en producción (Railway).
 
-## Getting Started
+Clario es un SaaS de gestión financiera para autónomos en España: calcula en tiempo real el "Sueldo Neto Disponible" separando automáticamente IVA, IRPF y cuota de autónomos, y emite facturas adaptadas a VeriFactu.
 
-This project is a starting point for a Flutter application.
+## Stack técnico
 
-A few resources to get you started if this is your first Flutter project:
+- Flutter / Dart
+- `http` (conexión con la API REST del backend)
+- `shared_preferences` y `flutter_secure_storage` (gestión del token JWT)
+- `image_picker` (captura de tickets y facturas para el OCR)
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Pantallas implementadas
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Login y registro de usuario.
+- Dashboard con el Sueldo Neto Disponible.
+- Gestión de facturas.
+- Gestión de gastos.
+- Escaneo de tickets y facturas (envía la imagen al backend, que la procesa con IA).
+
+## Cómo ejecutar en local
+
+Requisitos: Flutter SDK instalado.
+
+```bash
+git clone https://github.com/Josemi364/clario-app.git
+cd clario-app
+flutter pub get
+flutter run
+```
+
+Por defecto, la app apunta al backend ya desplegado en producción. Si quieres apuntar a un backend en local, cambia la constante `baseUrl` en `lib/services/api_service.dart`.
+
+## Estado del proyecto
+
+MVP en desarrollo activo.
+
+## Repositorio relacionado
+
+Backend (Spring Boot): [clario-backend](https://github.com/Josemi364/clario-backend)
